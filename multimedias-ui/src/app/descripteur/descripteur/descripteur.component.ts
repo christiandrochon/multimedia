@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { DescripteurService } from '../service/descripteur.service';
+import {Component} from '@angular/core';
+import {DescripteurService} from '../service/descripteur.service';
 import {CommonModule} from '@angular/common';
 
 @Component({
@@ -14,7 +14,8 @@ export class DescripteurComponent {
   message: string | null = null;
   loading: boolean = false;
 
-  constructor(private descripteurService: DescripteurService) { }
+  constructor(private descripteurService: DescripteurService) {
+  }
 
   generateRVB666() {
     this.loading = true;

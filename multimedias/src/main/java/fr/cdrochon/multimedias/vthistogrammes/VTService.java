@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 @Service
 public class VTService {
     
-//    @Value("${images.list.file}")
-//    private String imagesListFile;  // Fichier listant les images de la base
+    //    @Value("${images.list.file}")
+    //    private String imagesListFile;  // Fichier listant les images de la base
     
     @Value("${resnet.VT_description}")
     private String VTDescription; // Chemin vers le fichier des classes (e.g., VT_description.txt)

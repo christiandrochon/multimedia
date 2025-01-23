@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DescripteurFormController {
     
-    private DescripteurForme descripteurForme;
+    private final DescripteurForme descripteurForme;
     
     public DescripteurFormController(DescripteurForme descripteurForme) {
         this.descripteurForme = descripteurForme;

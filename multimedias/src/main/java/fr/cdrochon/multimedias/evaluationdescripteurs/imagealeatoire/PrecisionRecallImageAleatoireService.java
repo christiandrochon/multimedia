@@ -41,17 +41,14 @@ public class PrecisionRecallImageAleatoireService {
     private String histogramRGB666;
     
     /**
-     * Methode asynchrone pour récuperer la classe verité-terrain de l'image aleatoire et ses descripteurs.
-     * On utilise la méthode getRandomImageWithVT() pour récuperer une image aléatoire avec classe VT.
-     * On charge les descripteurs de l'image aléatoire et on retourne la classe VT et les descripteurs.
-     * On retourne un objet CompletableFuture contenant une map avec les clés "classeVT" et "descripteurs".
-     * On appelle la methode de recherche par similarité pour récuperer les 8 images similaires les kppv.
-     * On retourne les 8 images les kppv.
-     * On retourne les points de précision et rappel pour l'image aléatoire.
-     * On retourne un objet CompletableFuture contenant une map avec les clés "classeVT", "descripteurs", "nearestNeighbors", "Precision" et "Recall".
+     * Methode asynchrone pour récuperer la classe verité-terrain de l'image aleatoire et ses descripteurs. On utilise la méthode getRandomImageWithVT() pour
+     * récuperer une image aléatoire avec classe VT. On charge les descripteurs de l'image aléatoire et on retourne la classe VT et les descripteurs. On
+     * retourne un objet CompletableFuture contenant une map avec les clés "classeVT" et "descripteurs". On appelle la methode de recherche par similarité pour
+     * récuperer les 8 images similaires les kppv. On retourne les 8 images les kppv. On retourne les points de précision et rappel pour l'image aléatoire. On
+     * retourne un objet CompletableFuture contenant une map avec les clés "classeVT", "descripteurs", "nearestNeighbors", "Precision" et "Recall".
      *
      * @param queryImage nom de l'image requête
-     * @param topK nombre d'images similaires à considérer
+     * @param topK       nombre d'images similaires à considérer
      * @return objet CompletableFuture contenant une map avec les clés "classeVT", "descripteurs", "nearestNeighbors", "Precision" et "Recall"
      */
     @Async
@@ -65,16 +62,16 @@ public class PrecisionRecallImageAleatoireService {
             
             // Charger les fichiers VT_Files
             List<String> vtFilesLines = Files.readAllLines(Paths.get(vtFilesPath));
-            if (vtFilesLines.isEmpty()) {
+            if(vtFilesLines.isEmpty()) {
                 throw new IllegalStateException("Le fichier VT_Files est vide.");
             }
             logger.info("Nombre total de classes dans VT_Files : {}", vtFilesLines.size());
             
             // Trouver la ligne contenant l'image requête
             int vtClassIndex = -1;
-            for (int lineIndex = 0; lineIndex < vtFilesLines.size(); lineIndex++) {
+            for(int lineIndex = 0; lineIndex < vtFilesLines.size(); lineIndex++) {
                 List<String> classImages = Arrays.asList(vtFilesLines.get(lineIndex).split("\\s+"));
-                if (classImages.contains(queryImage)) {
+                if(classImages.contains(queryImage)) {
                     vtClassIndex = lineIndex;
                     logger.info("Image requête '{}' trouvée sur la ligne : {}", queryImage, lineIndex);
                     break;
@@ -82,7 +79,7 @@ public class PrecisionRecallImageAleatoireService {
             }
             
             // Si l'image requête n'est pas trouvée
-            if (vtClassIndex == -1) {
+            if(vtClassIndex == -1) {
                 logger.warn("Image requête '{}' non trouvée dans le fichier VT_Files.", queryImage);
                 return CompletableFuture.completedFuture(Map.of(
                         "Precision", new ArrayList<>(),
@@ -97,7 +94,7 @@ public class PrecisionRecallImageAleatoireService {
             
             // Charger les descripteurs RGB666
             Map<String, List<Double>> descriptorMap = loadDescriptors(histogramRGB666, allImageNames);
-            if (!descriptorMap.containsKey(queryImage)) {
+            if(!descriptorMap.containsKey(queryImage)) {
                 throw new IllegalArgumentException("L'image requête n'est pas présente dans les descripteurs.");
             }
             
@@ -105,7 +102,8 @@ public class PrecisionRecallImageAleatoireService {
             List<Double> queryDescriptor = descriptorMap.get(queryImage);
             List<String> sortedRetrievedImages = descriptorMap.entrySet().stream()
                                                               .filter(entry -> !entry.getKey().equals(queryImage)) // Exclure l'image elle-même
-                                                              .sorted(Comparator.comparingDouble(entry -> calculateEuclideanDistance(queryDescriptor, entry.getValue())))
+                                                              .sorted(Comparator.comparingDouble(entry -> calculateEuclideanDistance(queryDescriptor,
+                                                                                                                                     entry.getValue())))
                                                               .map(Map.Entry::getKey)
                                                               .collect(Collectors.toList());
             
@@ -118,11 +116,11 @@ public class PrecisionRecallImageAleatoireService {
             List<Point> recallPoints = new ArrayList<>();
             int kPlus = 0;
             
-            for (int k = 1; k <= topK && k <= sortedRetrievedImages.size(); k++) {
+            for(int k = 1; k <= topK && k <= sortedRetrievedImages.size(); k++) {
                 String retrievedImage = sortedRetrievedImages.get(k - 1);
                 
                 // Vérifier si l'image récupérée est pertinente
-                if (relevantImages.contains(retrievedImage)) {
+                if(relevantImages.contains(retrievedImage)) {
                     kPlus++;
                 }
                 
@@ -147,7 +145,7 @@ public class PrecisionRecallImageAleatoireService {
             logger.info("Fichier JSON généré : {}", filePath);
             return CompletableFuture.completedFuture(result);
             
-        } catch (Exception e) {
+        } catch(Exception e) {
             logger.error("Erreur lors du calcul précision/rappel pour l'image {} : {}", queryImage, e);
             return CompletableFuture.failedFuture(e);
         }
@@ -155,7 +153,9 @@ public class PrecisionRecallImageAleatoireService {
     
     /**
      * Générer une image aléatoire avec classe VT uniquement
+     *
      * @return nom de l'image aléatoire
+     *
      * @throws IOException en cas d'erreur de lecture
      */
     public String getRandomImageWithVT() throws IOException {
@@ -169,7 +169,7 @@ public class PrecisionRecallImageAleatoireService {
                                                .collect(Collectors.toList());
         
         // Vérifier qu'il y a au moins une image dans la liste
-        if (allVtImages.isEmpty()) {
+        if(allVtImages.isEmpty()) {
             throw new IllegalStateException("Le fichier VT_files est vide ou aucune image n'appartient à une classe VT.");
         }
         
@@ -181,13 +181,13 @@ public class PrecisionRecallImageAleatoireService {
         
         return randomImage; // Retourner le nom de l'image sélectionnée
     }
-
+    
     /**
      * Calculer la distance euclidienne entre deux vecteurs.
      */
     private double calculateEuclideanDistance(List<Double> desc1, List<Double> desc2) {
         double sum = 0.0;
-        for (int i = 0; i < desc1.size(); i++) {
+        for(int i = 0; i < desc1.size(); i++) {
             double diff = desc1.get(i) - desc2.get(i);
             sum += diff * diff;
         }
@@ -196,16 +196,18 @@ public class PrecisionRecallImageAleatoireService {
     
     /**
      * Charger les descripteurs pour les images de la base
+     *
      * @param histogramPath chemin du fichier de descripteurs
      * @param allImageNames noms de toutes les images
      * @return map des descripteurs
+     *
      * @throws IOException en cas d'erreur de lecture
      */
     private Map<String, List<Double>> loadDescriptors(String histogramPath, List<String> allImageNames) throws IOException {
         List<String> lines = Files.readAllLines(Paths.get(histogramPath));
         Map<String, List<Double>> descriptorMap = new HashMap<>();
         
-        for (int i = 0; i < allImageNames.size(); i++) {
+        for(int i = 0; i < allImageNames.size(); i++) {
             String imageName = allImageNames.get(i);
             List<Double> descriptor = Arrays.stream(lines.get(i).split("\\s+"))
                                             .map(Double::parseDouble)
@@ -220,6 +222,7 @@ public class PrecisionRecallImageAleatoireService {
      * Classe pour représenter un point précision/rappel.
      */
     public static class Point {
+        
         private final double recall;
         private final double precision;
         
@@ -236,137 +239,125 @@ public class PrecisionRecallImageAleatoireService {
             return precision;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    /**
-//     * Calcul principal des courbes précision/rappel.
-//     */
-//    public Map<String, List<Point>> calculatePrecisionRecall() throws IOException {
-//        // Charger les classes VT
-//        Map<String, List<String>> groundTruth = loadGroundTruth(vtFilesPath, vtDescriptionPath);
-//
-//        // Lire les noms des images dans la base
-//        List<String> imageNames = Files.readAllLines(Paths.get(base10000files));
-//
-//        // Lire les descripteurs
-//        List<String> gray256Descriptors = Files.readAllLines(Paths.get(histogramGray256));
-//        List<String> gray64Descriptors = Files.readAllLines(Paths.get(histogramGray64));
-//        List<String> gray16Descriptors = Files.readAllLines(Paths.get(histogramGray16));
-//
-//        // Préparer les résultats
-//        Map<String, List<Point>> results = new LinkedHashMap<>();
-//        results.put("Gray256", calculateForHistogram(gray256Descriptors, imageNames, groundTruth));
-//        results.put("Gray64", calculateForHistogram(gray64Descriptors, imageNames, groundTruth));
-//        results.put("Gray16", calculateForHistogram(gray16Descriptors, imageNames, groundTruth));
-//
-//        return results;
-//    }
-//
-//    /**
-//     * Charger la vérité terrain (classes VT).
-//     */
-//    private Map<String, List<String>> loadGroundTruth(String vtFilesPath, String vtDescriptionPath) throws IOException {
-//        List<String> classNames = Files.readAllLines(Paths.get(vtDescriptionPath));
-//        List<List<String>> classImages = Files.readAllLines(Paths.get(vtFilesPath)).stream()
-//                                              .map(line -> Arrays.asList(line.split("\\s+")))
-//                                              .collect(Collectors.toList());
-//
-//        Map<String, List<String>> groundTruth = new LinkedHashMap<>();
-//        for (int i = 0; i < classNames.size(); i++) {
-//            groundTruth.put(classNames.get(i), classImages.get(i));
-//        }
-//        return groundTruth;
-//    }
-//
-//    /**
-//     * Calculer les courbes précision/rappel pour un fichier de descripteurs.
-//     */
-//    private List<Point> calculateForHistogram(List<String> descriptors, List<String> imageNames, Map<String, List<String>> groundTruth) {
-//        List<Point> precisionRecall = new ArrayList<>();
-//
-//        // Parcourir chaque classe VT
-//        for (String className : groundTruth.keySet()) {
-//            List<String> relevantImages = groundTruth.get(className);
-//            precisionRecall.addAll(calculateForClass(relevantImages, imageNames, descriptors));
-//        }
-//
-//        // Moyenne des résultats pour chaque classe
-//        return averagePrecisionRecall(precisionRecall);
-//    }
-//
-//    /**
-//     * Calculer précision/rappel pour une classe.
-//     */
-//    private List<Point> calculateForClass(List<String> relevantImages, List<String> imageNames, List<String> descriptors) {
-//        List<Point> points = new ArrayList<>();
-//        int m = relevantImages.size(); // Nombre total d'images pertinentes dans la classe
-//        int kPlus = 0;
-//
-//        for (int k = 1; k <= imageNames.size(); k++) {
-//            String imageName = imageNames.get(k - 1);
-//
-//            if (relevantImages.contains(imageName)) {
-//                kPlus++;
-//            }
-//
-//            double precision = (double) kPlus / k;
-//            double recall = (double) kPlus / m;
-//
-//            points.add(new Point(recall, precision));
-//        }
-//
-//        return points;
-//    }
-//
-//    /**
-//     * Moyenne des courbes précision/rappel.
-//     */
-//    private List<Point> averagePrecisionRecall(List<Point> points) {
-//        Map<Double, List<Double>> recallPrecisionMap = new TreeMap<>();
-//        for (Point point : points) {
-//            recallPrecisionMap.computeIfAbsent(point.getRecall(), r -> new ArrayList<>()).add(point.getPrecision());
-//        }
-//
-//        List<Point> averagedPoints = new ArrayList<>();
-//        for (Map.Entry<Double, List<Double>> entry : recallPrecisionMap.entrySet()) {
-//            double recall = entry.getKey();
-//            double precision = entry.getValue().stream().mapToDouble(p -> p).average().orElse(0.0);
-//            averagedPoints.add(new Point(recall, precision));
-//        }
-//
-//        return averagedPoints;
-//    }
-//
-//    /**
-//     * Classe pour représenter un point précision/rappel.
-//     */
-//    public static class Point {
-//        private final double recall;
-//        private final double precision;
-//
-//        public Point(double recall, double precision) {
-//            this.recall = recall;
-//            this.precision = precision;
-//        }
-//
-//        public double getRecall() {
-//            return recall;
-//        }
-//
-//        public double getPrecision() {
-//            return precision;
-//        }
-//    }
+    
+    
+    //    /**
+    //     * Calcul principal des courbes précision/rappel.
+    //     */
+    //    public Map<String, List<Point>> calculatePrecisionRecall() throws IOException {
+    //        // Charger les classes VT
+    //        Map<String, List<String>> groundTruth = loadGroundTruth(vtFilesPath, vtDescriptionPath);
+    //
+    //        // Lire les noms des images dans la base
+    //        List<String> imageNames = Files.readAllLines(Paths.get(base10000files));
+    //
+    //        // Lire les descripteurs
+    //        List<String> gray256Descriptors = Files.readAllLines(Paths.get(histogramGray256));
+    //        List<String> gray64Descriptors = Files.readAllLines(Paths.get(histogramGray64));
+    //        List<String> gray16Descriptors = Files.readAllLines(Paths.get(histogramGray16));
+    //
+    //        // Préparer les résultats
+    //        Map<String, List<Point>> results = new LinkedHashMap<>();
+    //        results.put("Gray256", calculateForHistogram(gray256Descriptors, imageNames, groundTruth));
+    //        results.put("Gray64", calculateForHistogram(gray64Descriptors, imageNames, groundTruth));
+    //        results.put("Gray16", calculateForHistogram(gray16Descriptors, imageNames, groundTruth));
+    //
+    //        return results;
+    //    }
+    //
+    //    /**
+    //     * Charger la vérité terrain (classes VT).
+    //     */
+    //    private Map<String, List<String>> loadGroundTruth(String vtFilesPath, String vtDescriptionPath) throws IOException {
+    //        List<String> classNames = Files.readAllLines(Paths.get(vtDescriptionPath));
+    //        List<List<String>> classImages = Files.readAllLines(Paths.get(vtFilesPath)).stream()
+    //                                              .map(line -> Arrays.asList(line.split("\\s+")))
+    //                                              .collect(Collectors.toList());
+    //
+    //        Map<String, List<String>> groundTruth = new LinkedHashMap<>();
+    //        for (int i = 0; i < classNames.size(); i++) {
+    //            groundTruth.put(classNames.get(i), classImages.get(i));
+    //        }
+    //        return groundTruth;
+    //    }
+    //
+    //    /**
+    //     * Calculer les courbes précision/rappel pour un fichier de descripteurs.
+    //     */
+    //    private List<Point> calculateForHistogram(List<String> descriptors, List<String> imageNames, Map<String, List<String>> groundTruth) {
+    //        List<Point> precisionRecall = new ArrayList<>();
+    //
+    //        // Parcourir chaque classe VT
+    //        for (String className : groundTruth.keySet()) {
+    //            List<String> relevantImages = groundTruth.get(className);
+    //            precisionRecall.addAll(calculateForClass(relevantImages, imageNames, descriptors));
+    //        }
+    //
+    //        // Moyenne des résultats pour chaque classe
+    //        return averagePrecisionRecall(precisionRecall);
+    //    }
+    //
+    //    /**
+    //     * Calculer précision/rappel pour une classe.
+    //     */
+    //    private List<Point> calculateForClass(List<String> relevantImages, List<String> imageNames, List<String> descriptors) {
+    //        List<Point> points = new ArrayList<>();
+    //        int m = relevantImages.size(); // Nombre total d'images pertinentes dans la classe
+    //        int kPlus = 0;
+    //
+    //        for (int k = 1; k <= imageNames.size(); k++) {
+    //            String imageName = imageNames.get(k - 1);
+    //
+    //            if (relevantImages.contains(imageName)) {
+    //                kPlus++;
+    //            }
+    //
+    //            double precision = (double) kPlus / k;
+    //            double recall = (double) kPlus / m;
+    //
+    //            points.add(new Point(recall, precision));
+    //        }
+    //
+    //        return points;
+    //    }
+    //
+    //    /**
+    //     * Moyenne des courbes précision/rappel.
+    //     */
+    //    private List<Point> averagePrecisionRecall(List<Point> points) {
+    //        Map<Double, List<Double>> recallPrecisionMap = new TreeMap<>();
+    //        for (Point point : points) {
+    //            recallPrecisionMap.computeIfAbsent(point.getRecall(), r -> new ArrayList<>()).add(point.getPrecision());
+    //        }
+    //
+    //        List<Point> averagedPoints = new ArrayList<>();
+    //        for (Map.Entry<Double, List<Double>> entry : recallPrecisionMap.entrySet()) {
+    //            double recall = entry.getKey();
+    //            double precision = entry.getValue().stream().mapToDouble(p -> p).average().orElse(0.0);
+    //            averagedPoints.add(new Point(recall, precision));
+    //        }
+    //
+    //        return averagedPoints;
+    //    }
+    //
+    //    /**
+    //     * Classe pour représenter un point précision/rappel.
+    //     */
+    //    public static class Point {
+    //        private final double recall;
+    //        private final double precision;
+    //
+    //        public Point(double recall, double precision) {
+    //            this.recall = recall;
+    //            this.precision = precision;
+    //        }
+    //
+    //        public double getRecall() {
+    //            return recall;
+    //        }
+    //
+    //        public double getPrecision() {
+    //            return precision;
+    //        }
+    //    }
 }

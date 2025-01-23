@@ -126,18 +126,18 @@ public class ResnetSeulService {
                                                                             .filter(allImages::contains) // S'assurer que l'image est bien dans la
                                                                             // liste complète
                                                                             .map(image -> {
-                                                                                           int imageIndex = allImages.indexOf(image);
-                                                                                           if(imageIndex != -1 && imageIndex < descriptorsList.size()) {
-                                                                                               double distance = calculateEuclideanDistance(queryDescriptor,
-                                                                                                                                            descriptorsList.get(
-                                                                                                                                                    imageIndex));
-                                                                                               return new ImageDistance(image, distance);
-                                                                                           } else {
-                                                                                               return new ImageDistance(image,
-                                                                                                                        Double.MAX_VALUE); // Distance max
-                                                                                               // pour les images sans descripteur
-                                                                                           }
-                                                                                       })
+                                                                                int imageIndex = allImages.indexOf(image);
+                                                                                if(imageIndex != -1 && imageIndex < descriptorsList.size()) {
+                                                                                    double distance = calculateEuclideanDistance(queryDescriptor,
+                                                                                                                                 descriptorsList.get(
+                                                                                                                                         imageIndex));
+                                                                                    return new ImageDistance(image, distance);
+                                                                                } else {
+                                                                                    return new ImageDistance(image,
+                                                                                                             Double.MAX_VALUE); // Distance max
+                                                                                    // pour les images sans descripteur
+                                                                                }
+                                                                            })
                                                                             .sorted(Comparator.comparingDouble(ImageDistance::getDistance))
                                                                             .limit(8) // Limiter aux 8 résultats les plus proches
                                                                             .collect(Collectors.toList());
@@ -175,6 +175,7 @@ public class ResnetSeulService {
      * Charge les descripteurs depuis le fichier.
      *
      * @return Liste de descripteurs (chaque descripteur est une liste de valeurs flottantes)
+     *
      * @throws IOException en cas de problème de lecture du fichier
      */
     private List<List<Float>> loadDescriptors() throws IOException {

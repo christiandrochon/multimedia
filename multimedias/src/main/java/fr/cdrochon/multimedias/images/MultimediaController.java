@@ -67,7 +67,7 @@ public class MultimediaController {
                                      .collect(Collectors.toList());
             
             // Vérifier s'il y a au moins une image
-            if(files.size() == 0) {
+            if(files.isEmpty()) {
                 throw new RuntimeException("No images found in directory.");
             }
             

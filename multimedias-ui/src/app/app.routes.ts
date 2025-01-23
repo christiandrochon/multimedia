@@ -15,7 +15,6 @@ import {SimilaritecouleurtextureComponent} from './similaritecouleurtexture/simi
 import {SimilariteformeComponent} from './similariteforme/similariteforme.component';
 import {SimilariteglobaleComponent} from './similariteglobale/similariteglobale.component';
 import {PrecisionRecallComponent} from './precision-recall/precision-recall.component';
-import {PrecisionrappelgenerationService} from './precisionrappelgeneration/precisionrappelgeneration.service';
 import {PrecisionrappelgenerationComponent} from './precisionrappelgeneration/precisionrappelgeneration.component';
 
 

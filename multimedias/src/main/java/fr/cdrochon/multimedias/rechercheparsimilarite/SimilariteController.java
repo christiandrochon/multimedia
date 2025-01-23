@@ -104,7 +104,7 @@ public class SimilariteController {
      */
     @GetMapping("/recherchesimilairetexture")
     public ResponseEntity<List<String>> getSimilarTextureImages(@RequestParam String queryImage, @RequestParam int k) {
-        if (queryImage == null || queryImage.isEmpty()) {
+        if(queryImage == null || queryImage.isEmpty()) {
             return ResponseEntity.badRequest().body(Collections.emptyList());
         }
         
@@ -117,19 +117,21 @@ public class SimilariteController {
     }
     
     //    @GetMapping("/recherchesimilairetexture")
-//    public ResponseEntity<List<String>> getSimilarTextureImages(@RequestParam int k) {
-//        if(selectedImageName == null) {
-//            return ResponseEntity.badRequest().body(Collections.emptyList());
-//        }
-//
-//        // Utiliser le nom de l'image sélectionnée pour la recherche
-//        List<String> similarImages = textureService.findSimilarTextures(selectedImageName, k);
-//        return ResponseEntity.ok(similarImages);
-//    }
+    //    public ResponseEntity<List<String>> getSimilarTextureImages(@RequestParam int k) {
+    //        if(selectedImageName == null) {
+    //            return ResponseEntity.badRequest().body(Collections.emptyList());
+    //        }
+    //
+    //        // Utiliser le nom de l'image sélectionnée pour la recherche
+    //        List<String> similarImages = textureService.findSimilarTextures(selectedImageName, k);
+    //        return ResponseEntity.ok(similarImages);
+    //    }
     
     /**
      * Endpoint pour obtenir une image aléatoire
+     *
      * @return l'image aléatoire
+     *
      * @throws IOException en cas d'erreur de lecture de l'image
      */
     @GetMapping("/similaritecouleurtexture")
@@ -149,6 +151,7 @@ public class SimilariteController {
     
     /**
      * Endpoint pour obtenir une image aléatoire
+     *
      * @param k le nombre d'images similaires à retourner
      * @return la liste des images similaires
      */

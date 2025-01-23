@@ -10,18 +10,18 @@ import java.io.IOException;
 @Configuration
 @ComponentScan(basePackages = "fr.cdrochon.multimedias.generationdescripteurs")
 public class HistogramConsoleApp {
-
+    
     public static void main(String[] args) {
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(HistogramConsoleApp.class);
         DescripteurGrey256_1f descripteur = context.getBean(DescripteurGrey256_1f.class);
-
+        
         try {
             descripteur.process();
             float[] histogram = descripteur.computeHistogram();
-            for (float value : histogram) {
+            for(float value : histogram) {
                 System.out.print(value + " ");
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             e.printStackTrace();
         } finally {
             context.close();

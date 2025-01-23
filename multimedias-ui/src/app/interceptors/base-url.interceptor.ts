@@ -1,5 +1,4 @@
-import { HttpInterceptorFn } from '@angular/common/http';
-import {environment} from '../../environment.prod';
+import {HttpInterceptorFn} from '@angular/common/http';
 
 /**
  * Fonction intercepteur HTTP pour ajouter automatiquement une URL de base
