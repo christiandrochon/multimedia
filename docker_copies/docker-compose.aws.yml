@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  multimedias-server:
+    image: 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-server:latest
+    ports:
+      - "8087:8087"
+    environment:
+      - IMAGES_BASE_URL=http://multimedias-server:8087/images
+      - BASE_DIRECTORY=/app/ferecatu
+      - BASE_OUTPUTS_DIRECTORY=/app/outputs
+
+  multimedias-frontend:
+    image: 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-frontend:latest
+    ports:
+      - "4200:4200"
+    environment:
+      - API_BASE_URL=http://multimedias-server:8087

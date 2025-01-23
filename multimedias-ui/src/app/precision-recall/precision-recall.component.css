@@ -1,0 +1,19 @@
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+button {
+  margin: 10px;
+  padding: 10px 15px;
+  font-size: 16px;
+}
+
+input {
+  margin: 5px;
+  padding: 5px;
+  font-size: 14px;
+  width: 80px;
+}
+

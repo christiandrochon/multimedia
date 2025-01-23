@@ -1,0 +1,70 @@
+<div class="container text-center">
+
+  <!-- Link to return to the homepage -->
+  <div class="mb-4">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <h2 class="">Recherche d'images similaires avec classes VT + histogramme de 216 couleurs</h2>
+
+  <!-- Afficher l'image aléatoire chargée au démarrage -->
+  <div *ngIf="randomImage" class="query-image mb-4">
+
+    <!-- Bouton pour recharger une image aléatoire -->
+    <button class="btn btn-primary mt-2 mb-3" (click)="loadRandomImage()" [disabled]="loading">
+      Recharger une image aléatoire
+    </button>
+
+    <h3>Image de référence :</h3>
+    <img [src]="randomImage" alt="Image aléatoire" class="img-thumbnail"/>
+  </div>
+
+  <!-- Bouton pour lancer la recherche par similarité -->
+  <!-- Bouton pour lancer la recherche -->
+  <div class="text-center">
+    <button *ngIf="randomImage" class="btn btn-primary mt-3" (click)="onSimilaritySearch()">Lancer la recherche par similarité</button>
+  </div>
+
+  <!-- Afficher les images similaires après la recherche -->
+  <div *ngIf="similarityImages.length > 0" class="mt-4">
+    <h3>Images similaires</h3>
+    <div class="row">
+      <div *ngFor="let image of similarityImages" class="col-3 mb-3">
+        <img [src]="image" alt="Image similaire" class="img-thumbnail"/>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--<div class="container">-->
+<!--  <h2>Recherche par Descripteur</h2>-->
+
+<!--  &lt;!&ndash; Liste déroulante pour choisir la classe de descripteur &ndash;&gt;-->
+<!--  <label for="classSelect">Choisissez un descripteur :</label>-->
+<!--  <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassSelect()">-->
+<!--    <option *ngFor="let className of classDescriptors" [value]="className">{{ className }}</option>-->
+<!--  </select>-->
+
+<!--  &lt;!&ndash; Afficher l'image aléatoire de la classe sélectionnée &ndash;&gt;-->
+<!--  <div *ngIf="randomImage" class="mt-3">-->
+<!--    <h3>Image aléatoire de la classe : {{ selectedClass }}</h3>-->
+<!--    <img [src]="randomImage" alt="Image aléatoire" class="img-thumbnail" />-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Bouton pour lancer la recherche par similarité &ndash;&gt;-->
+<!--  <button *ngIf="randomImage" class="btn btn-primary mt-3" (click)="onSimilaritySearch()" >Lancer la recherche par similarité</button>-->
+
+<!--  &lt;!&ndash; Afficher les images similaires après la recherche &ndash;&gt;-->
+<!--  <div *ngIf="similarityImages.length > 0" class="mt-4">-->
+<!--    <h3>Images similaires</h3>-->
+<!--    <div class="row">-->
+<!--      <div *ngFor="let image of similarityImages" class="col-3 mb-3">-->
+<!--        <img [src]="image" alt="Image similaire" class="img-thumbnail" />-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->
+

@@ -1,0 +1,26 @@
+services:
+  multimedias-server:
+    container_name: multimedias-server
+    build:
+      context: ../multimedias
+      dockerfile: ../Dockerfile
+    ports:
+      - "8087:8087"
+    volumes:
+      - ./multimedias/ferecatu:/app/ferecatu # Monter le dossier local ferecatu dans le conteneur
+    environment:
+      - IMAGES_BASE_URL=http://multimedias-server:8087/images
+      - BASE_DIRECTORY=/app/ferecatu
+      - BASE_OUTPUTS_DIRECTORY=/app/outputs
+
+  multimedias-frontend:
+    container_name: multimedias-frontend
+    build:
+      context: ../multimedias-ui
+      dockerfile: ../../multimedias-ui/Dockerfile
+    ports:
+      - "4200:4200"
+#    environment:
+#        - API_BASE_URL=http://multimedias-server:8087
+    depends_on:
+      - multimedias-server

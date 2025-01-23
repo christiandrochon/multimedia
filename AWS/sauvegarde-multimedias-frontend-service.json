@@ -1,0 +1,54 @@
+{
+    "NetworkInterfaces": [
+        {
+            "Association": {
+                "IpOwnerId": "amazon",
+                "PublicDnsName": "ec2-15-237-112-19.eu-west-3.compute.amazonaws.com",
+                "PublicIp": "15.237.112.19"
+            },
+            "Attachment": {
+                "AttachTime": "2024-11-18T23:41:21.000Z",
+                "AttachmentId": "eni-attach-06466ede673ab4408",
+                "DeleteOnTermination": false,
+                "DeviceIndex": 1,
+                "NetworkCardIndex": 0,
+                "InstanceOwnerId": "063221116269",
+                "Status": "attached"
+            },
+            "AvailabilityZone": "eu-west-3a",
+            "Description": "arn:aws:ecs:eu-west-3:851725552674:attachment/748cfeef-4d55-40b4-95ff-b1193abe799a",
+            "Groups": [
+                {
+                    "GroupId": "sg-0f024d512d9fe6112",
+                    "GroupName": "multimedias-frontend-sg"
+                }
+            ],
+            "InterfaceType": "interface",
+            "Ipv6Addresses": [],
+            "MacAddress": "06:ab:55:72:d8:cb",
+            "NetworkInterfaceId": "eni-05ce2fd2935e7222d",
+            "OwnerId": "851725552674",
+            "PrivateDnsName": "ip-10-0-1-171.eu-west-3.compute.internal",
+            "PrivateIpAddress": "10.0.1.171",
+            "PrivateIpAddresses": [
+                {
+                    "Association": {
+                        "IpOwnerId": "amazon",
+                        "PublicDnsName": "ec2-15-237-112-19.eu-west-3.compute.amazonaws.com",
+                        "PublicIp": "15.237.112.19"
+                    },
+                    "Primary": true,
+                    "PrivateDnsName": "ip-10-0-1-171.eu-west-3.compute.internal",
+                    "PrivateIpAddress": "10.0.1.171"
+                }
+            ],
+            "RequesterId": "750940333643",
+            "RequesterManaged": true,
+            "SourceDestCheck": true,
+            "Status": "in-use",
+            "SubnetId": "subnet-099aee40215ffcaed",
+            "TagSet": [],
+            "VpcId": "vpc-0b8184d2e6426ccb0"
+        }
+    ]
+}

@@ -1,0 +1,51 @@
+<div class="container text-center mt-4">
+  <!-- Link to return to the homepage -->
+  <div class="mb-4r">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <h1 class="text-center mb-4">Précision/Rappel</h1>
+
+  <!-- Bouton pour générer une image aléatoire -->
+  <div class="text-center mb-4">
+    <button class="btn btn-primary me-2" (click)="generateRandomImage()" [disabled]="loading">
+      Générer une image aléatoire
+    </button>
+  </div>
+
+  <!-- Spinner de chargement -->
+  <div *ngIf="loading" class="text-center mb-4">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+  </div>
+
+  <!-- Affichage de l'image générée aléatoirement -->
+  <div class="text-center mb-4" *ngIf="imageUrl && !loading">
+    <h5>Image sélectionnée :</h5>
+    <img
+      [src]="imageUrl"
+      alt="Image sélectionnée"
+      class="img-thumbnail"
+      style="max-width: 600px; height: auto;"
+    />
+  </div>
+
+  <!-- Affichage des voisins proches -->
+  <div class="text-center mb-4" *ngIf="nearestNeighborImages.length > 0 && !loading">
+    <h5>Voisins les plus proches :</h5>
+    <div class="row">
+      <div class="col-3" *ngFor="let neighbor of nearestNeighborImages">
+        <img [src]="neighbor" alt="Voisin proche" class="img-thumbnail" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas pour afficher le graphique -->
+  <div class="chart-container" style="position: relative; height: 400px; width: 800px;">
+    <canvas id="precisionRecallChart"></canvas>
+  </div>
+
+</div>

@@ -1,0 +1,359 @@
+# Connection avec l'user kiki depuis une console
+aws configure
+# renseigner les credentials de Access key ID,Secret access key : (la virgule separe l'id et le mdp):AKIA4MTWMRQRGG3FKKVQ,7+kR//ZWj5/fj8Km0EUFRicz2g1vvXWR0b5vsuhZ
+
+# Connectez-vous à Amazon ECR
+aws ecr get-login-password --region eu-west-3 | docker login --username AWS --password-stdin 851725552674.dkr.ecr.eu-west-3.amazonaws.com
+
+# Creation du cluster depuis chez moi directement sur AWS
+aws ecs create-cluster --cluster-name Nfe205Cluster --region eu-west-3
+# Verifier le cluster distant sur aws
+aws ecs list-clusters --region eu-west-3
+# Verifier les permission IAM
+aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::851725552674:user/kiki --action-names ecs:CreateCluster
+
+
+
+
+LOCAL
+# Construire l'image
+docker build -t multimedias-server ./multimedias
+docker build -t multimedias-frontend ./multimedias-ui
+
+# Taguer l'image pour ECR
+docker tag multimedias-server:latest 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-server:latest
+docker tag multimedias-frontend:latest 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-frontend:latest
+
+# Pousser l'image dans ECR
+docker push 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-server:latest
+docker push 851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-frontend:latest
+
+
+
+Étape 2 : Configurer le réseau AWS
+2.1 Identifier les composants réseau existants
+
+Utilisez les composants réseau par défaut :
+
+aws ec2 describe-vpcs --region eu-west-3
+aws ec2 describe-subnets --region eu-west-3
+aws ec2 describe-security-groups --region eu-west-3
+
+2.2 Créer un groupe de sécurité pour le backend
+
+Le groupe de sécurité du backend n'a pas besoin d'autoriser l'accès public :
+# pour le server
+aws ec2 create-security-group `
+    --group-name multimedias-backend-sg `
+    --description "Security group for backend server" `
+    --vpc-id vpc-097aeefd92c931d85 `
+    --region eu-west-3
+# pour lme fronted 
+aws ec2 create-security-group `
+    --group-name multimedias-frontend-sg `
+    --description "Security group for frontend server" `
+    --vpc-id vpc-097aeefd92c931d85 `
+    --region eu-west-3
+
+
+Autorisez uniquement le trafic interne du serveur :
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-0b75bcdaadeb6bf48 `
+    --protocol tcp `
+    --port 8087 `
+    --source-group <frontend-sg-id> `
+    --region eu-west-3
+
+2.3 Créer un groupe de sécurité pour le frontend
+
+Le frontend doit autoriser l'accès public sur les ports 80 et 4200 :
+
+aws ec2 create-security-group `
+    --group-name multimedias-frontend-sg `
+    --description "Security group for frontend server" `
+    --vpc-id vpc-097aeefd92c931d85 `
+    --region eu-west-3
+
+Autorisez l'accès public :
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-0b75bcdaadeb6bf48 `
+    --protocol tcp `
+    --port 4200 `
+    --cidr 0.0.0.0/0 `
+    --region eu-west-3
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-0b75bcdaadeb6bf48 `
+    --protocol tcp `
+    --port 80 `
+    --cidr 0.0.0.0/0 `
+    --region eu-west-3
+
+
+
+
+
+
+
+# Creer le referentiel multimedias-server 
+aws ecr create-repository --repository-name multimedias-server --region eu-west-3
+aws ecr create-repository --repository-name multimedias-frontend --region eu-west-3
+
+
+
+Étape 3 : Créer les définitions de tâche ECS
+# creer un fichier json pour enregistrer les taches à effectuer (voir les fichier multimedias-server-task.json ET multimedias-frontend-task.json)
+#enregistrer la definition de chaque service dans aws 
+aws ecs register-task-definition --cli-input-json file://multimedias-server-task.json --region eu-west-3
+aws ecs register-task-definition --cli-input-json file://multimedias-frontend-task.json --region eu-west-3
+
+
+Étape 4 : Créer les services ECS
+# server 
+aws ecs create-service `
+    --cluster Nfe205Cluster `
+    --service-name multimedias-server `
+    --task-definition multimedias-server `
+    --desired-count 1 `
+    --launch-type FARGATE `
+    --network-configuration "awsvpcConfiguration={subnets=[<subnet-id>],securityGroups=[<backend-sg-id>],assignPublicIp=DISABLED}" `
+    --region eu-west-3
+
+# pour le server
+aws ecs create-service --cluster Nfe205Cluster --service-name multimedias-server --task-definition multimedias-server --desired-count 1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=[subnet-05aaf3001ee6d98eb],securityGroups=[sg-02601376e8c8ccdfb],assignPublicIp=ENABLED}" --region eu-west-3
+# pour le frontend
+aws ecs create-service --cluster Nfe205Cluster --service-name multimedias-frontend --task-definition multimedias-frontend --desired-count 1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=[subnet-05aaf3001ee6d98eb],securityGroups=[sg-02601376e8c8ccdfb],assignPublicIp=ENABLED}" --region eu-west-3
+
+# MAJ un service ECS si sevrice dejà existant
+# server
+aws ecs update-service `
+    --cluster Nfe205Cluster `
+    --service multimedias-server `
+    --task-definition multimedias-server `
+    --desired-count 1 `
+    --force-new-deployment `
+    --region eu-west-3
+
+# Verifier les services 
+aws ecs list-services --cluster Nfe205Cluster --region eu-west-3
+
+# Obtenir l'ip publique du frontend
+# 1 . Listez les tâches associées au service frontend
+aws ecs list-tasks --cluster Nfe205Cluster --service-name multimedias-frontend --region eu-west-3
+# 2 . Obtenez les détails de la tâche pour récupérer l'IP publique :
+aws ecs describe-tasks --cluster Nfe205Cluster --tasks <task-id> --region eu-west-3
+# 3 .  Accédez au frontend via 
+http://<frontend-public-ip>:4200
+
+
+
+# Lister les services pour confirmer l’état :
+aws ecs describe-services --cluster Nfe205Cluster --services multimedias-server --region eu-west-3
+Lister les tâches associées au service :
+aws ecs list-tasks `
+    --cluster Nfe205Cluster `
+    --service-name multimedias-server `
+    --region eu-west-3
+
+
+
+
+
+
+# Tester le frontend 
+# Si vous avez activé assignPublicIp=ENABLED, le conteneur frontend obtiendra une IP publique.
+#Listez les tâches ECS pour obtenir l'IP :
+aws ecs list-tasks --cluster Nfe205Cluster --region eu-west-3
+aws ecs describe-tasks --cluster Nfe205Cluster --tasks a133198c866245c6a82011c3ed09f552 --region eu-west-3
+
+
+
+
+
+
+
+
+
+
+
+
+
+Autoriser l’accès public au frontend
+
+Ajoutez des règles pour permettre les connexions entrantes sur les ports 80 et 4200 au groupe de sécurité frontend :
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-02467459b9fb6f990 `
+    --protocol tcp `
+    --port 80 `
+    --cidr 0.0.0.0/0 `
+    --region eu-west-3
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-02467459b9fb6f990 `
+    --protocol tcp `
+    --port 4200 `
+    --cidr 0.0.0.0/0 `
+    --region eu-west-3
+
+3. Configurer la communication entre frontend et backend
+
+Autorisez le groupe de sécurité backend à recevoir des connexions depuis le groupe de sécurité frontend sur le port 8087 :
+
+aws ec2 authorize-security-group-ingress `
+    --group-id sg-0b75bcdaadeb6bf48 `
+    --protocol tcp `
+    --port 8087 `
+    --source-group sg-02467459b9fb6f990 `
+    --region eu-west-3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Autorisez le frontend à communiquer avec le backend sur le port 8087 :
+aws ec2 authorize-security-group-ingress `
+    --group-id <backend-security-group-id> `
+    --protocol tcp `
+    --port 8087 `
+    --source-group <frontend-security-group-id> `
+    --region eu-west-3
+# pour recuperer tous les groupes de securité 
+aws ec2 describe-security-groups --region eu-west-3
+
+
+
+# Creer un VPC
+aws ec2 create-vpc --cidr-block 10.0.0.0/16 --region eu-west-3
+# Activer DNS et attribution automatique d'IP publiques
+aws ec2 modify-vpc-attribute --vpc-id vpc-0b8184d2e6426ccb0 --enable-dns-support
+aws ec2 modify-vpc-attribute --vpc-id vpc-0b8184d2e6426ccb0 --enable-dns-hostnames
+# Créer un sous-réseau public
+aws ec2 create-subnet --vpc-id vpc-0b8184d2e6426ccb0 --cidr-block 10.0.1.0/24 --availability-zone eu-west-3a
+# Créer une gateway Internet et attacher au VPC
+aws ec2 create-internet-gateway
+# La commande retournera un ID de gateway Internet, par exemple : igw-0abcd1234efgh5678.
+aws ec2 attach-internet-gateway --vpc-id vpc-0b8184d2e6426ccb0 --internet-gateway-id igw-0fd8cf709f53d2ce1
+
+
+#Configurer une table de routage
+aws ec2 create-route-table --vpc-id vpc-0b8184d2e6426ccb0
+# Cela retournera un ID de table de routage, par exemple : rtb-0abcd1234efgh5678.
+aws ec2 create-route --route-table-id rtb-0729bacf918e48ef8 --destination-cidr-block 0.0.0.0/0 --gateway-id igw-0fd8cf709f53d2ce1
+# Associez la table de routage au sous-réseau public :
+aws ec2 associate-route-table --route-table-id rtb-0729bacf918e48ef8 --subnet-id subnet-099aee40215ffcaed
+
+
+# COnfigurer le groupe de securité 
+aws ec2 create-security-group --group-name multimedias-frontend-sg --description "Security group for multimedias frontend" --vpc-id vpc-0b8184d2e6426ccb0
+# Ajouter des règles pour autoriser le trafic
+aws ec2 authorize-security-group-ingress --group-id sg-0f024d512d9fe6112 --protocol tcp --port 80 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0f024d512d9fe6112 --protocol tcp --port 443 --cidr 0.0.0.0/0
+aws ec2 authorize-security-group-ingress --group-id sg-0f024d512d9fe6112 --protocol tcp --port 4200 --cidr 0.0.0.0/0
+
+
+
+
+#Eventuellement, Créez le rôle IAM
+aws iam create-role --role-name ecsTaskExecutionRole --assume-role-policy-document file://assume-role-policy.json
+#  Attachez une politique au rôle
+aws iam attach-role-policy --role-name ecsTaskExecutionRole --policy-arn arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+#Obtenez l'ARN du rôle
+aws iam get-role --role-name ecsTaskExecutionRole
+# Recuperer l'ARN du role dans le fichier json qui decoule de la commande precedente 
+arn:aws:iam::851725552674:role/ecsTaskExecutionRole
+
+
+6. Étape 5 : Vérifier le déploiement
+# Déployer multimedias-frontend dans ECS 
+aws ecs create-service --cluster Nfe205Cluster --service-name multimedias-frontend --task-definition multimedias-frontend --desired-count 1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=[subnet-099aee40215ffcaed],securityGroups=[sg-0f024d512d9fe6112],assignPublicIp=ENABLED}" --region eu-west-3
+# Deployer le service server
+aws ecs create-service --cluster Nfe205Cluster --service-name multimedias-server --task-definition multimedias-server --desired-count 1 --launch-type FARGATE --network-configuration "awsvpcConfiguration={subnets=[subnet-099aee40215ffcaed],securityGroups=[sg-0f024d512d9fe6112],assignPublicIp=ENABLED}" --region eu-west-3
+
+
+
+#Vérifiez la connectivité entre les services
+aws ec2 describe-security-groups --group-ids <backend-security-group-id> --region eu-west-3
+
+
+
+
+
+
+# Trouver l'IP publique
+# Identifier l'ENI grace à la commande  "aws ecs describe-tasks --cluster Nfe205Cluster --tasks a133198c866245c6a82011c3ed09f552 --region eu-west-3"
+{
+    "name": "networkInterfaceId",
+    "value": "eni-05ce2fd2935e7222d"
+}
+# Décrire l'ENI avec AWS CLI
+ => Cela retournera un JSON contenant les informations de l'interface réseau, y compris l'IP publique.
+
+
+Obtenez l'IP publique :
+    Listez les tâches ECS associées au service :
+aws ecs list-tasks --cluster Nfe205Cluster --service-name multimedias-server --region eu-west-3
+
+Décrivez la tâche pour obtenir l'IP publique :
+
+aws ecs describe-tasks --cluster Nfe205Cluster --tasks 7b30660ff3cd4983b86f3bc089898669 --region eu-west-3
+
+Cherchez dans la sortie le champ networkInterfaces -> publicIpv4Address.
+
+
+
+
+
+
+
+# Ajouter le port 4200
+# Identifier le Security Group
+aws ec2 describe-network-interfaces --network-interface-ids eni-05ce2fd2935e7222d --region eu-west-3
+# Recherchez le champ Groups pour identifier le Security Group attaché :
+"Groups": [
+                {
+                    "GroupId": "sg-0f024d512d9fe6112",
+                    "GroupName": "multimedias-frontend-sg"
+                }
+            ],
+# Ajouter une règle pour le port 4200
+aws ec2 authorize-security-group-ingress --group-id sg-0f024d512d9fe6112 --protocol tcp --port 4200 --cidr 0.0.0.0/0 --region eu-west-3
+# Verifier les regles de security group 
+aws ec2 describe-security-groups --group-ids sg-0f024d512d9fe6112 --region eu-west-3
+# Recherchez une entrée comme celle-ci :
+"Ingress": [
+    {
+        "IpProtocol": "tcp",
+        "FromPort": 4200,
+        "ToPort": 4200,
+        "IpRanges": [
+            {
+                "CidrIp": "0.0.0.0/0"
+            }
+        ]
+    }
+]
+
+Tester l'application : Accédez à l’IP publique avec votre navigateur :
+"Association": {
+                "IpOwnerId": "amazon",
+                "PublicDnsName": "ec2-15-237-112-19.eu-west-3.compute.amazonaws.com",
+                "PublicIp": "15.237.112.19"
+            },
+curl http://15.237.112.19:4200
+http://<PublicIP>:80

@@ -1,0 +1,47 @@
+<div class="container mt-5 text-center">
+
+  <!-- Link to return to the homepage -->
+  <div class="mb-5">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <h2 class="text-center mb-4">Génération asynchrone des fichiers JSON de précision/rappel</h2>
+
+  <div class="d-flex justify-content-center mb-4">
+    <button
+      class="btn btn-primary me-5"
+      [disabled]="isLoading"
+      (click)="generateJson('gris')"
+    >
+      Générer JSON Gris
+    </button>
+    <button
+      class="btn btn-primary me-5"
+      [disabled]="isLoading"
+      (click)="generateJson('couleur')"
+    >
+      Générer JSON Couleur
+    </button>
+    <button
+      class="btn btn-primary"
+      [disabled]="isLoading"
+      (click)="generateJson('gris-couleur-resnet')"
+    >
+      Générer JSON Gris-Couleur-ResNet
+    </button>
+  </div>
+
+  <div class="text-center" *ngIf="isLoading">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="mt-2">Génération en cours, veuillez patienter...</p>
+  </div>
+
+  <div *ngIf="responseMessage" class="alert alert-info text-center mt-4">
+    {{ responseMessage }}
+  </div>
+</div>
+

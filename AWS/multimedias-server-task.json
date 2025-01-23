@@ -1,0 +1,34 @@
+{
+    "family": "multimedias-server",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "multimedias-server",
+            "image": "851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-server:latest",
+            "memory": 512,
+            "cpu": 256,
+            "portMappings": [
+                {
+                    "containerPort": 8087,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                { "name": "IMAGES_BASE_URL", "value": "http://multimedias-server:8087/images" },
+                { "name": "BASE_DIRECTORY", "value": "/app/ferecatu" }
+            ],
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/multimedias-server",
+                    "awslogs-region": "eu-west-3",
+                    "awslogs-stream-prefix": "ecs"
+                }
+            }
+        }
+    ],
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::851725552674:role/ecsTaskExecutionRole"
+}

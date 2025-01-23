@@ -1,0 +1,1 @@
+aws ecs create-service     --cluster NfeCluster     --service-name multimedias-server-service     --task-definition multimedias-server     --desired-count 1     --launch-type FARGATE     --network-configuration "awsvpcConfiguration={subnets=[subnet-xxxxx],securityGroups=[sg-backend],assignPublicIp=DISABLED}"     --region eu-west-3

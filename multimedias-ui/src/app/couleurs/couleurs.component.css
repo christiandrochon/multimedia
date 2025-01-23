@@ -1,0 +1,14 @@
+.image-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.image-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.image-wrapper {
+  width: 45%;
+  margin: 10px;
+}

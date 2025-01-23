@@ -1,0 +1,27 @@
+services:
+  multimedias-server:
+    container_name: multimedias-server
+    build:
+      context: ./multimedias
+      dockerfile: Dockerfile
+    ports:
+      - "8087:8087"
+    volumes:
+      - ./multimedias/ferecatu:/app/ferecatu # Monter le dossier local ferecatu dans le conteneur
+      - ./multimedias/outputs/descripteurs:/app/outputs/descripteurs # Monter le dossier local descripteurs dans le conteneur
+      - ./multimedias/outputs/precisionrappel:/app/outputs/precisionrappel # Monter le dossier local precisionrappel dans le conteneur
+    environment:
+      - IMAGES_BASE_URL=http://multimedias-server:8087/images
+      - BASE_DIRECTORY=/app/ferecatu
+      - BASE_OUTPUTS_DIRECTORY_DESCRIPTEURS=/app/outputs/descripteurs
+      - BASE_OUTPUTS_DIRECTORY_PRECISIONRAPPEL=/app/outputs/precisionrappel
+
+  multimedias-frontend:
+    container_name: multimedias-frontend
+    build:
+      context: ./multimedias-ui
+      dockerfile: Dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - multimedias-server

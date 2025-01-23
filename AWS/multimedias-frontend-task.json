@@ -1,0 +1,26 @@
+{
+    "family": "multimedias-frontend",
+    "networkMode": "awsvpc",
+    "containerDefinitions": [
+        {
+            "name": "multimedias-frontend",
+            "image": "851725552674.dkr.ecr.eu-west-3.amazonaws.com/multimedias-frontend:latest",
+            "memory": 512,
+            "cpu": 256,
+            "portMappings": [
+                {
+                    "containerPort": 4200,
+                    "hostPort": 4200,
+                    "protocol": "tcp"
+                }
+            ],
+            "environment": [
+                { "name": "API_BASE_URL", "value": "http://172.31.0.148:8087" }
+            ]
+        }
+    ],
+    "requiresCompatibilities": ["FARGATE"],
+    "cpu": "256",
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::851725552674:role/ecsTaskExecutionRole"
+}

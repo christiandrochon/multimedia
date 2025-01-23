@@ -1,0 +1,80 @@
+<div class="container">
+  <h1 class="mt-5 text-center">NFE205 - Multimedias</h1>
+
+  <br>
+
+  <h2>Visualisation des Histogrammes de couleur</h2>
+  <ul>
+    <li><a [routerLink]="'/histogramme-gris/:bins'"><strong>/histogramme-gris/:bins</strong></a>: Visualisation dynamique des histogrammes de niveau de gris sur
+      une image aléatoire. Possibilité de changer le nombre de bins
+    </li>
+    <li><a [routerLink]="'/histogramme-couleur/:bins'"><strong>/histogramme-couleur/:bins</strong></a>: Visualisation dynamique des histogrammes couleur sur une
+      image aléatoire. Possibilité de changer le nombre de bins
+    </li>
+  </ul>
+
+  <br>
+
+  <h2>Recherche par similarité avec les descripteurs de couleur, texture et forme</h2>
+  <ul>
+    <li><a [routerLink]="'/similaritecouleur'"><strong>/similaritecouleur</strong></a>: Recherche par similarité sur les histogrammes couleur (le niveau de
+      couleur est à definir dans le code)
+    </li>
+    <li><a [routerLink]="'/similaritetexture'"><strong>/similaritetexture</strong></a>: Recherche par similarité sur les descripteurs de texture</li>
+    <li><a [routerLink]="'/similariteforme'"><strong>/similariteforme</strong></a>: Recherche par similarité sur les descripteurs de forme</li>
+    <li><a [routerLink]="'/similaritecouleurtexture'"><strong>/similaritecouleurtexture</strong></a>: Recherche par similarité sur les descripteurs de couleur
+      et
+      de texture
+    </li>
+    <li><a [routerLink]="'/similariteglobale'"><strong>/similariteglobale</strong></a>: Recherche par similarité sur les descripteurs de couleur + forme +
+      texture
+    </li>
+  </ul>
+
+  <br>
+
+  <h2>Recherche par similarité avec les classes Vérité-Terrain + histogramme de couleur</h2>
+  <ul>
+    <li><a [routerLink]="'/VTclasses/similar'"><strong>/VTclasses/similar</strong></a>: Recherche par similarité avec classes VT et les
+      histogrammes de 216 couleurs
+    </li>
+  </ul>
+
+  <br>
+
+  <h2>Recherche par similarité avec les descripteurs issus de Resnet</h2>
+  <ul>
+    <li><a [routerLink]="'/resnetclasses'"><strong>/resnetclasses</strong></a>: Recherche par similarité avec descripteurs ResNet uniquement</li>
+  </ul>
+
+  <br>
+
+  <h2>
+    Génération des descripteurs de gris, couleur, texture et forme
+  </h2>
+  <ul>
+    <li><a [routerLink]="'/descripteurs'"><strong>/descripteurs</strong></a>: Génération de descripteurs de couleur de niveaux de gris ou de couleur, de texture
+      et de forme
+    </li>
+  </ul>
+
+  <br>
+
+  <h2>
+    Evaluation des descripteurs (graphique ou par des fichiers json de précision/rappel)
+  </h2>
+  <ul>
+    <li><a [routerLink]="'/evaluation'"><strong>/evaluation</strong></a>: Affichage de la courbe precision/rappel à partir d'une image aléatoire</li>
+    <li><a [routerLink]="'/precision-rappel'"><strong>/precision-rappel</strong></a>: Génération des fichiers JSON des courbes precision/rappel des descripteurs de couleur, de texture et de forme</li>
+  </ul>
+
+  <br>
+  <h2 class="mt-3">Autres</h2>
+  <ul>
+
+    <li><a [routerLink]="'/createCheckerboard'"><strong>/createCheckerboard</strong></a>: Création d'un damier</li>
+    <li><a [routerLink]="'/swapRandomImage'"><strong>/swapRandomImage</strong></a>: Inversion des couleurs vert sur bleu sur une image aléatoire</li>
+    <!--  <li><a [routerLink]="'/hello'"><strong>/hello</strong></a>: Test</li>-->
+    <!--  <li><a [routerLink]="'/images'"><strong>/images</strong></a>: Affichage dynamique de 16 images aléatoires et de boutons interactifs</li>-->
+  </ul>
+</div>

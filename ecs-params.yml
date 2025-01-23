@@ -1,0 +1,17 @@
+version: 1
+task_definition:
+  task_execution_role: ecsTaskExecutionRole
+  ecs_network_mode: awsvpc
+  cpu: "256" # 0.25 vCPU
+  memory: "512" # 512 MiB
+
+run_params:
+  network_configuration:
+    awsvpc_configuration:
+      subnets:
+        - subnet-05e906b58091cb2c5 # Remplacez par l'ID de votre sous-réseau
+        - subnet-04eb9bdd5f4c20d1a # Ajoutez un autre sous-réseau si nécessaire
+      security_groups:
+        - sg-0b75bcdaadeb6bf48 # backend
+        - sg-02467459b9fb6f990 #  frontend
+      assign_public_ip: ENABLED # ACTIVE pour les services accessibles publiquement

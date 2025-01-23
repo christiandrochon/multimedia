@@ -1,0 +1,133 @@
+<div class="container mt-5 text-center">
+
+  <!-- Retour à la page d'accueil -->
+  <div class="mb-4">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <h1 class="mb-4">Histogramme des Couleurs (Moyenne et Individuels)</h1>
+
+  <!-- Sélecteur du nombre de bins et bouton pour recharger une image -->
+  <div class="d-flex justify-content-center align-items-center mb-4">
+    <div class="mx-3">
+      <label for="numBins" class="form-label">Changer le nombre d'intervalles</label>
+      <input id="numBins" type="number" [(ngModel)]="numBins" min="2" max="256" class="form-control w-100" (change)="updateBins()"/>
+    </div>
+
+    <div class="mx-3">
+      <button class="btn btn-primary mt-4" (click)="loadHistogram()">
+        Recharger une nouvelle image
+      </button>
+    </div>
+  </div>
+
+  <!-- Affichage de l'image -->
+  <div class="mb-4 text-center">
+    <img *ngIf="imageUrl" [src]="imageUrl" alt="Image aléatoire" class="img-fluid rounded shadow img-perso" style="max-width: 100%; height: auto;"/>
+  </div>
+
+  <!-- Affichage du diagramme en bâtons pour l'histogramme moyen -->
+  <div class="chart-container mb-4">
+    <h3>Histogramme de couleurs RVB</h3>
+    <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            chartType="bar">
+    </canvas>
+  </div>
+
+  <!-- Explication des valeurs -->
+  <p class="text-muted">
+    Les valeurs dans chaque <strong>intervalle</strong> ci-dessous représentent le <strong>niveau de couleur</strong> sur chaque axe de couleur par intervalle, ainsi que que le <strong>nombre de pixels</strong> contenu dans chaque axe de couleur qui tombe dans cet intervalle.
+  </p>
+
+  <!-- Affichage des valeurs individuelles pour Rouge, Vert, et Bleu -->
+  <div class="mt-4 container-values">
+    <h3>Valeurs des Histogrammes Individuels (Valeur Moyenne RVB et Nombre de Pixels par Bin)</h3>
+    <ul class="list-group w-50 mx-auto" style="font-size: 100%">
+      <li class="list-group-item text-center" *ngFor="let bin of binRanges; let i = index">
+        <strong>{{ bin.label }} :</strong>
+        <br>
+        - <strong>{{ redAverages[i] || 0 }}</strong> niveaux de <strong>Rouge</strong> ({{ redHistogram[i] || 0 }} pixels),<br>
+        - <strong>{{ greenAverages[i] || 0 }}</strong> niveaux de <strong>Vert</strong> ({{ greenHistogram[i] || 0 }} pixels),<br>
+        - <strong>{{ blueAverages[i] || 0 }}</strong> niveaux de <strong>Bleu</strong> ({{ blueHistogram[i] || 0 }} pixels)
+      </li>
+    </ul>
+  </div>
+
+
+</div>
+
+
+
+
+
+<!--<div class="container mt-5 text-center">-->
+
+<!--  &lt;!&ndash; Link to return to the homepage &ndash;&gt;-->
+<!--  <div class="mb-4">-->
+<!--    <a href="/" class="btn btn-secondary">-->
+<!--      <i class="bi bi-house-door"></i> Retour à la page d'accueil-->
+<!--    </a>-->
+<!--  </div>-->
+
+<!--  <h1 class="mb-4">Histogramme des Niveaux de Couleurs</h1>-->
+
+<!--  &lt;!&ndash; Sélecteur du nombre de bins et bouton pour recharger une image &ndash;&gt;-->
+<!--  <div class="d-flex justify-content-center align-items-center mb-4">-->
+<!--    <div class="mx-3">-->
+<!--      <label for="numBins" class="form-label">Changer le nombre d'intervalles de couleurs</label>-->
+<!--      <input id="numBins" type="number" [(ngModel)]="numBins" min="2" max="256" class="form-control w-100" (change)="updateBins(); loadHistogram()"/>-->
+<!--    </div>-->
+
+<!--    <div class="mx-3">-->
+<!--      <button class="btn btn-primary mt-4" (click)="loadNewImage()">-->
+<!--        Recharger une nouvelle image-->
+<!--      </button>-->
+<!--    </div>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Affichage de l'image &ndash;&gt;-->
+<!--  <div class="mb-4 text-center">-->
+<!--    <img *ngIf="imageUrl" [src]="imageUrl" alt="Image aléatoire" class="img-fluid rounded shadow img-perso" style="max-width: 100%; height: auto;"/>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Affichage du diagramme en bâtons pour les niveaux de couleurs &ndash;&gt;-->
+<!--  <div class="chart-container">-->
+<!--    <canvas baseChart-->
+<!--            [datasets]="chartData"-->
+<!--            [labels]="chartLabels"-->
+<!--            [options]="chartOptions"-->
+<!--            chartType="bar">-->
+<!--    </canvas>-->
+<!--  </div>-->
+
+<!--  &lt;!&ndash; Affichage des intervalles de niveaux de couleurs (RVB) &ndash;&gt;-->
+<!--  <div>-->
+<!--    <div class="my-5 w-100 text-center container-values">-->
+<!--      <h3>Intervalles de niveaux de couleurs (Rouge) :</h3>-->
+<!--      <ul class="list-group w-50 mx-auto">-->
+<!--        <li class="list-group-item" *ngFor="let bin of binRangesRed">-->
+<!--          {{ bin.label }} : de {{ bin.start }} à {{ bin.end }} (valeurs de rouge)-->
+<!--        </li>-->
+<!--      </ul>-->
+
+<!--      <h3>Intervalles de niveaux de couleurs (Vert) :</h3>-->
+<!--      <ul class="list-group w-50 mx-auto">-->
+<!--        <li class="list-group-item" *ngFor="let bin of binRangesGreen">-->
+<!--          {{ bin.label }} : de {{ bin.start }} à {{ bin.end }} (valeurs de vert)-->
+<!--        </li>-->
+<!--      </ul>-->
+
+<!--      <h3>Intervalles de niveaux de couleurs (Bleu) :</h3>-->
+<!--      <ul class="list-group w-50 mx-auto">-->
+<!--        <li class="list-group-item" *ngFor="let bin of binRangesBlue">-->
+<!--          {{ bin.label }} : de {{ bin.start }} à {{ bin.end }} (valeurs de bleu)-->
+<!--        </li>-->
+<!--      </ul>-->
+<!--    </div>-->
+<!--  </div>-->
+<!--</div>-->

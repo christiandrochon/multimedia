@@ -1,0 +1,52 @@
+<div class="container mt-5 text-center">
+
+  <!-- Link to return to the homepage -->
+  <div class="mb-4">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <!-- Titre centré -->
+  <h1 class="mb-4">Histogramme en Niveaux de Gris</h1>
+
+  <!-- Ligne pour le champ de sélection et le bouton, centrés -->
+  <div class="d-flex justify-content-center align-items-center mb-4">
+    <!-- Colonne pour le champ de sélection du nombre de bins -->
+    <div class="mx-lg-3">
+      <label for="numBins" class="form-label">Changer le nombre d'intervalles de niveaux de gris</label>
+      <input id="numBins" type="number" [(ngModel)]="numBins" min="2" max="256" class="form-control w-100" (change)="updateBins()"/>
+    </div>
+    <!-- Colonne pour le bouton de recharge de l'image -->
+    <div class="mx-3">
+      <button class="btn btn-primary mt-4" (click)="loadNewImage()">
+        Recharger une nouvelle image
+      </button>
+    </div>
+  </div>
+
+  <!-- Affichage de l'image, centré et espacé du bouton -->
+  <div class="mb-4 text-center">
+    <img *ngIf="imageUrl" [src]="imageUrl" alt="Image aléatoire" class="img-fluid rounded shadow img-perso" style="max-width: 100%; height: auto;"/>
+  </div>
+
+  <!-- Affichage du diagramme en bâtons, centré -->
+  <div class="w-50 mx-auto">
+    <canvas baseChart
+            [datasets]="chartData"
+            [labels]="chartLabels"
+            [options]="chartOptions"
+            chartType="bar">
+    </canvas>
+  </div>
+
+  <!-- Affichage des bins avec explication, centré -->
+  <div class="mt-4 mb-5 container-values">
+    <h3>Intervalles de valeurs de luminosité :</h3>
+    <ul class="list-group w-50 mx-auto" style="font-size: 100%">
+      <li class="list-group-item text-center" *ngFor="let bin of binRanges">
+        {{ bin.label }} : de {{ bin.start }} à {{ bin.end }} (valeurs de gris)
+      </li>
+    </ul>
+  </div>
+</div>

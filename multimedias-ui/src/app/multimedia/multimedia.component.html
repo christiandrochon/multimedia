@@ -1,0 +1,43 @@
+<div class="container text-center">
+
+  <!-- Link to return to the homepage -->
+  <div class="mb-4">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <!-- Section des images -->
+  <div class="image-grid">
+    <div *ngFor="let image of images" class="image-wrapper">
+      <img [src]="image" alt="Image" class="image-item"/>
+    </div>
+  </div>
+
+  <!-- Section des boutons -->
+  <div class="button-grid">
+    <!-- Bouton "Load" avec icône de synchronisation -->
+    <button class="btn btn-primary action-button" (click)="reloadImages()">
+      <fa-icon [icon]="'sync'"></fa-icon>
+      {{ buttons[0] }}
+    </button>
+
+    <!-- Bouton "Back" avec icône flèche gauche -->
+    <button class="btn btn-primary action-button">
+      <fa-icon [icon]="'arrow-left'"></fa-icon>
+      {{ buttons[1] }}
+    </button>
+
+    <!-- Bouton "Next" avec icône flèche droite -->
+    <button class="btn btn-primary action-button">
+      <fa-icon [icon]="'arrow-right'"></fa-icon>
+      {{ buttons[2] }}
+    </button>
+
+    <!-- Boutons 4 à 6 avec icône d'interrogation -->
+    <button *ngFor="let btn of buttons.slice(3)" class="btn btn-primary action-button">
+      <fa-icon [icon]="'question-circle'"></fa-icon>
+      {{ btn }}
+    </button>
+  </div>
+</div>

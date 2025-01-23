@@ -1,0 +1,32 @@
+<!--<div class="image-container">-->
+<!--  <img [src]="checkerboardImageUrl" alt="Checkerboard Image">-->
+<!--</div>-->
+
+<!--<div class="image-grid">-->
+<!--  <div class="image-wrapper" *ngIf="randomImageUrl">-->
+<!--    <img [src]="randomImageUrl" alt="Image originale"/>-->
+<!--  </div>-->
+<!--  <div class="image-wrapper" *ngIf="swappedImageUrl">-->
+<!--    <img [src]="swappedImageUrl" alt="Image modifiée"/>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!-- Link to return to the homepage -->
+<div class="mb-4">
+  <a href="/" class="btn btn-secondary">
+    <i class="bi bi-house-door"></i> Retour à la page d'accueil
+  </a>
+</div>
+
+<div *ngIf="imageUrl.includes('createCheckerboard')" class="image-container">
+  <img [src]="checkerboardImageUrl" alt="Checkerboard Image">
+</div>
+
+<div *ngIf="imageUrl.includes('swapRandomImage')" class="image-grid">
+  <div class="image-wrapper" *ngIf="randomImageUrl">
+    <img [src]="randomImageUrl" alt="Image originale"/>
+  </div>
+  <div class="image-wrapper" *ngIf="swappedImageUrl">
+    <img [src]="swappedImageUrl" alt="Image modifiée"/>
+  </div>
+</div>

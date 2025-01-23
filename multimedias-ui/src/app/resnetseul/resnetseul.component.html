@@ -1,0 +1,36 @@
+<div class="container text-center">
+
+  <!-- Link to return to the homepage -->
+  <div class="mb-4">
+    <a href="/" class="btn btn-secondary">
+      <i class="bi bi-house-door"></i> Retour à la page d'accueil
+    </a>
+  </div>
+
+  <h2>Recherche par Descripteur Resnet uniquement</h2>
+
+  <!-- Liste déroulante pour choisir la classe de descripteur -->
+  <label for="classSelect">Choisissez un descripteur :</label>
+  <select id="classSelect" [(ngModel)]="selectedClass" (change)="onClassSelect()">
+    <option *ngFor="let className of classDescriptors" [value]="className">{{ className }}</option>
+  </select>
+
+  <!-- Afficher l'image aléatoire de la classe sélectionnée -->
+  <div *ngIf="randomImage" class="mt-3">
+    <h3>Image aléatoire de la classe : {{ selectedClass }}</h3>
+    <img [src]="randomImage" alt="Image aléatoire" class="img-thumbnail" />
+  </div>
+
+  <!-- Bouton pour lancer la recherche par similarité -->
+  <button *ngIf="randomImage" class="btn btn-primary mt-3" (click)="onSimilaritySearch()" >Lancer la recherche par similarité</button>
+
+  <!-- Afficher les images similaires après la recherche -->
+  <div *ngIf="similarityImages.length > 0" class="mt-4">
+    <h3>Images similaires</h3>
+    <div class="row">
+      <div *ngFor="let image of similarityImages" class="col-3 mb-3">
+        <img [src]="image" alt="Image similaire" class="img-thumbnail" />
+      </div>
+    </div>
+  </div>
+</div>
