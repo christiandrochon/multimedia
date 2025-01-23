@@ -42,8 +42,19 @@ testem.log
 Thumbs.db
 
 ### Personal ###
-ferecatu/
-outputs/
+target/
+# Ignorer tout le contenu du dossier ferecatu
+multimedias/ferecatu/*
+# N pas ignorer le dossier lui-même
+!multimedias/ferecatu/
+# Autoriser le fichier .gitkeep dans ferecatu
+!multimedias/ferecatu/.gitkeep
+multimedias/outputs/descripteurs/*
+!multimedias/outputs/descripteurs/
+!multimedias/outputs/descripteurs/.gitkeep
+multimedias/outputs/precisionrappel/*
+!multimedias/outputs/precisionrappel/
+!multimedias/outputs/precisionrappel/.gitkeep
 
 
 
