@@ -55,6 +55,8 @@ multimedias/outputs/descripteurs/*
 multimedias/outputs/precisionrappel/*
 !multimedias/outputs/precisionrappel/
 !multimedias/outputs/precisionrappel/.gitkeep
+# s'assurer de ne pas giter les precision_recall générés à la racine du projet
+/precision_recall*
 
 
 
