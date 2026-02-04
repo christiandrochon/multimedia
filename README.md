@@ -15,42 +15,42 @@ Le projet est structuré en frontend (Angular) et backend (Spring Boot / Java).
 
 ---
 
-## Ce que démontre ce projet
+## Exécution via Docker 
 
-Ce projet met en évidence les compétences suivantes :
+Le projet peut être lancé **dans son intégralité (backend + frontend)** via Docker Compose.
 
-### Conception logicielle et architecture
-- Conception d’une application **full-stack** structurée (Angular / Spring Boot)
-- Séparation claire des responsabilités (UI, API, services, indexation, évaluation)
-- Architecture modulaire permettant l’ajout ou le remplacement de descripteurs
+### Prérequis
+- Docker
+- Docker Compose
 
-### Traitement d’images et vision par ordinateur
-- Implémentation de **descripteurs visuels classiques** (couleur, niveaux de gris, forme)
-- Mise en œuvre de **pipelines de prétraitement** (normalisation, redimensionnement)
-- Compréhension des limites et complémentarités entre descripteurs hand-crafted et deep learning
+### Lancement de l’application complète
 
-### Machine Learning et deep learning appliqué
-- Utilisation de **réseaux de neurones convolutionnels (ResNet)** pour l’extraction d’embeddings
-- Indexation vectorielle et recherche de voisins proches (nearest neighbors)
-- Combinaison de scores issus de différentes méthodes de similarité
+Depuis la **racine du projet** :
 
-### Recherche d’information et évaluation
-- Mise en place d’une **vérité terrain** pour l’évaluation expérimentale
-- Calcul de métriques standards : précision, rappel, mAP
-- Analyse comparative des performances selon les méthodes utilisées
+```bash
+docker compose -f compose.yaml up -d
+``` 
+Cette commande :
+* construit les images nécessaires,
+* démarre l’ensemble des services en arrière-plan,
+* rend l’application immédiatement accessible.
 
-### Développement backend et API
-- Conception d’API REST pour la recherche multimédia
-- Gestion d’upload de fichiers et de réponses structurées JSON
-- Tests unitaires et tests d’intégration backend
+### Accès aux services
 
-### Bonnes pratiques de projet
-- Projet versionné, documenté et distribuable (licence MIT)
-- README structuré et orienté compréhension rapide
-- Déploiement possible en environnement de production (Docker / Nginx)
+Frontend :
+`http://localhost:4200`
 
-Ce projet illustre une capacité à **relier des concepts théoriques (vision, ML, recherche d’information) à une implémentation logicielle complète et exploitable**.
+Backend API :
+`http://localhost:8087`
 
+### Arret des services
+```bash
+docker compose -f compose.yaml down
+``` 
+### Remarques
+Les ports exposés peuvent être modifiés dans compose.yaml.
+Les volumes Docker permettent de persister les données (images, indexs, embeddings).
+Cette méthode est recommandée pour les démonstrations et les audits techniques, car elle garantit un environnement reproductible.
 
 --- 
 
