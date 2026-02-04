@@ -1,4 +1,5 @@
-# Multimedia - Recherche par similarité d’images
+# Recherche d'images par similarité
+
 
 ## Présentation
 
