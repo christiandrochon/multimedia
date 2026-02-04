@@ -1,0 +1,16 @@
+<div *ngIf="loading">Chargement de la courbe précision/rappel…</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div *ngIf="!loading && !error">
+  <h3>Courbe Précision/Rappel</h3>
+  <table>
+    <tr>
+      <th>Rappel</th>
+      <th>Précision</th>
+    </tr>
+    <tr *ngFor="let r of recall; let i = index">
+      <td>{{ r | number:'1.2-2' }}</td>
+      <td>{{ precision[i] | number:'1.2-2' }}</td>
+    </tr>
+  </table>
+</div>
