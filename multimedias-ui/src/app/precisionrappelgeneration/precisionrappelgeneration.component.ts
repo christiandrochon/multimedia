@@ -15,7 +15,7 @@ export class PrecisionrappelgenerationComponent {
 
   constructor(private prService: PrecisionrappelgenerationService) {}
 
-  generateJson(type: 'gris' | 'couleur' | 'gris-couleur-resnet'): void {
+  generateJson(type: 'gris' | 'couleur' | 'gris-couleur-resnet' | 'courbe-globale'): void {
     this.isLoading = true; // Activer le spinner
 
     let serviceCall;
@@ -29,6 +29,9 @@ export class PrecisionrappelgenerationComponent {
       case 'gris-couleur-resnet':
         serviceCall = this.prService.processPRTous();
         break;
+      case 'courbe-globale':
+        serviceCall = this.prService.getPrecisionRecallGlobal()
+        break;
       default:
         this.responseMessage = 'Type de traitement invalide.';
         this.isLoading = false;
@@ -36,15 +39,17 @@ export class PrecisionrappelgenerationComponent {
     }
 
     // Appeler le service et gérer la réponse
-    serviceCall.subscribe(
-      (response) => {
-        this.responseMessage = `Succès : ${response}`;
-        this.isLoading = false; // Désactiver le spinner après succès
-      },
-      (error) => {
-        this.responseMessage = `Erreur : ${error.message}`;
-        this.isLoading = false; // Désactiver le spinner après une erreur
-      }
-    );
+    // serviceCall.subscribe(
+    //   (response) => {
+    //     this.responseMessage = `Succès : ${response}`;
+    //     this.isLoading = false; // Désactiver le spinner après succès
+    //   },
+    //   (error) => {
+    //     this.responseMessage = `Erreur : ${error.message}`;
+    //     this.isLoading = false; // Désactiver le spinner après une erreur
+    //   }
+    // );
   }
+
+
 }

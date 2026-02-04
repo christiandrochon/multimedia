@@ -31,6 +31,11 @@
     >
       Générer JSON Gris-Couleur-ResNet
     </button>
+
+    <button (click)="generateJson('courbe-globale')" class="btn btn-info" [disabled]="isLoading">
+      Générer courbe PR globale
+    </button>
+
   </div>
 
   <div class="text-center" *ngIf="isLoading">

@@ -44,4 +44,12 @@ export class PrecisionrappelgenerationService {
         })
       );
   }
+
+  getPrecisionRecallGlobal(): Observable<{ recall: number[]; precision: number[] }> {
+    return this.http.get<{ recall: number[]; precision: number[] }>(
+      `${this.apiUrl}/precision-rappel/PR-curve`,
+      { responseType: 'json' }
+    );
+  }
+
 }
