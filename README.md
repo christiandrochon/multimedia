@@ -105,8 +105,8 @@ Cette méthode est recommandée pour les démonstrations et les audits technique
 ├── multimedias-ui/ # Frontend Angular
 ├── multimedias/    # Backend Spring Boot / Java
 ├── data/
-│ ├── images/   # Jeux d’images
-│ ├── indexes/  # Indexs de descripteurs
+│ ├── images/       # Jeux d’images
+│ ├── indexes/      # Indexs de descripteurs
 │ └── ground_truth/ # Vérité terrain (CSV / JSON)
 ├── LICENSE
 └── README.md
