@@ -1,17 +1,32 @@
 # Recherche d'images par similarité
 
+Projet de vision par ordinateur permettant la recherche d'images par similarité à partir de descripteurs classiques et d'embeddings générés par réseau de neurones.
 
 ## Présentation
 
-Ce projet implémente une application complète de **recherche par similarité d’images à partir d’une image requête**.  
-L’utilisateur soumet une image, le système extrait différents types de descripteurs et retourne les images les plus similaires selon une métrique donnée.
+Ce projet implémente un moteur de recherche d’images par similarité reposant sur plusieurs familles de descripteurs visuels et sémantiques.
 
-L’approche combine :
-- descripteurs **classiques** (couleur, niveaux de gris, forme, texte),
-- descripteurs **profonds** (embeddings extraits par réseau de neurones convolutionnel de type ResNet),
-- une **évaluation quantitative** basée sur des classes de vérité terrain.
+L'application permet à un utilisateur de soumettre une image requête puis de retrouver automatiquement les images les plus proches au sein d'une base documentaire.
+Les descripteurs des images sont pré-calculés et indexés de manière asynchrone afin de réduire les temps de réponse lors des recherches.
 
-Le projet est structuré en frontend (Angular) et backend (Spring Boot / Java).
+Le système combine :
+
+- descripteurs visuels classiques (couleur, niveaux de gris, forme) ;
+- descripteurs textuels ;
+- embeddings générés par un réseau de neurones convolutionnel ResNet ;
+- mécanismes de fusion et de pondération des scores ;
+- évaluation quantitative à partir d'une vérité terrain.
+
+L'application est développée sous forme d'une architecture full-stack Angular / Spring Boot et peut être exécutée intégralement via Docker Compose.
+
+---
+
+## Cas d'usage
+
+- Recherche d’images similaires dans une base documentaire.
+- Exploration de collections multimédias.
+- Évaluation et comparaison de méthodes de recherche visuelle.
+- Démonstration de techniques de vision par ordinateur et de recherche vectorielle.
 
 ---
 
@@ -43,7 +58,7 @@ Frontend :
 Backend API :
 `http://localhost:8087`
 
-### Arret des services
+### Arrêt des services
 ```bash
 docker compose -f compose.yaml down
 ``` 
@@ -56,7 +71,7 @@ Cette méthode est recommandée pour les démonstrations et les audits technique
 
 ## Fonctionnalités principales
 
-- Upload d’une image requête aléatoire via interface web
+- Upload d’une image requête via interface web
 - Recherche par similarité selon différents modes :
     - couleur
     - forme
@@ -69,18 +84,54 @@ Cette méthode est recommandée pour les démonstrations et les audits technique
 
 ---
 
+## Compétences démontrées
+
+- Conception d’une architecture full-stack Angular / Spring Boot.
+- Développement d’une API REST de recherche multimédia.
+- Traitements asynchrones pour la génération et l’indexation des descripteurs.
+- Implémentation d’algorithmes de recherche par similarité d’images.
+- Extraction et comparaison de descripteurs visuels (couleur, niveaux de gris, forme et texte).
+- Utilisation d’un réseau de neurones convolutionnel (ResNet) pour la génération d’embeddings.
+- Mise en œuvre d’une recherche vectorielle basée sur les plus proches voisins.
+- Combinaison et pondération de plusieurs métriques de similarité.
+- Évaluation des performances à l’aide d’indicateurs de précision et de rappel.
+- Conteneurisation et exécution reproductible avec Docker Compose.
+
+---
+
 ## Architecture du projet
 ````text
 .
 ├── multimedias-ui/ # Frontend Angular
-├── backend/ # Backend Spring Boot / Java
+├── multimedias/    # Backend Spring Boot / Java
 ├── data/
-│ ├── images/ # Jeux d’images
-│ ├── indexes/ # Indexs de descripteurs
+│ ├── images/   # Jeux d’images
+│ ├── indexes/  # Indexs de descripteurs
 │ └── ground_truth/ # Vérité terrain (CSV / JSON)
 ├── LICENSE
 └── README.md
 ````
+
+## Technologies utilisées
+
+### Backend
+- Java 17
+- Spring Boot
+- Maven
+
+### Frontend
+- Angular
+- TypeScript
+
+### IA / Vision par ordinateur
+- ResNet
+- Embeddings vectoriels
+- Recherche par similarité d'images
+
+### Infrastructure
+- Docker
+- Docker Compose
+
 
 ---
 ## Backend — Spring Boot / Java
@@ -88,7 +139,7 @@ Dossier : `multimedias`
 
 ### Lancement
 ```bash
-cd backend
+cd multimedias
 mvn spring-boot:run
 ```
 Ou build du JAR :
@@ -97,7 +148,7 @@ mvn clean package
 java -jar target/*.jar
 ```
 
-Port par défaut : `8080`
+Port par défaut : `8087`
 
 
 ---
@@ -136,7 +187,7 @@ Un fichier proxy.conf.json peut être utilisé pour rediriger /api vers le backe
 ````json
 {
   "/api": {
-    "target": "http://localhost:8080",
+    "target": "http://localhost:8087",
     "secure": false
   }
 }
@@ -208,8 +259,7 @@ Retourne les métriques calculées à partir de la vérité terrain (si activée
 
 ### Deep features (ResNet)
 * Extraction d’embeddings à partir d’un réseau ResNet pré-entraîné
-* Indexation vectorielle (FAISS, Annoy ou implémentation maison)
-* Recherche par nearest neighbors
+* Indexation vectorielle et recherche des plus proches voisins.
 * Combinaison possible avec les scores des autres descripteurs
 
 --- 
@@ -231,7 +281,7 @@ query_id, relevant_id1, relevant_id2, ...
 
 ### Exemple d’appel curl
 ````bash
-curl -X POST http://localhost:8080/api/search \
+curl -X POST http://localhost:8087/api/search \
   -F file=@image.jpg \
   -F topK=10 \
   -F mode=combined
